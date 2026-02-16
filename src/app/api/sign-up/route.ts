@@ -9,6 +9,7 @@ export async function POST(request : Request) {
     await dbConnect()
     try {
         const {username,password,email} =await request.json()
+        
   const existingUserVerifiedByUsername = await UserModel.findOne({
             username,
             isVerified : true
@@ -32,14 +33,14 @@ export async function POST(request : Request) {
                     message : "User already exist with this email"
                 },{status : 400})
             } else {
-                const hashedPassword  = await bcrypt.hash(password,10)
+                const hashedPassword  = await bcrypt.hash(password.toString(),10)
                 existingUserByEmail.password = hashedPassword;
                 existingUserByEmail.verifyCode = verifyCode;
                 existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000)
                 await existingUserByEmail.save()
             }
       } else {
-      const hashedPassword = await bcrypt.hash(password,10)
+      const hashedPassword = await bcrypt.hash(password.toString(),10)
       const expiryDate = new Date()
       expiryDate.setHours(expiryDate.getHours() + 1)
 
@@ -55,7 +56,7 @@ export async function POST(request : Request) {
       })
         await  newUser.save()
       }
-      // send verifivcation email
+      // send verification email
   const emailResponse = await sendVerificationEmail(email,username,verifyCode)
   if(!emailResponse.success){
     return Response.json({

@@ -16,7 +16,7 @@
      return NextResponse.redirect(new URL("/dashboard", request.url));
    }
 
-   // Not logged in → protect dashboard
+  //  Not logged in → protect dashboard
    if (!token && pathname.startsWith("/dashboard")) {
      return NextResponse.redirect(new URL("/home", request.url));
    }

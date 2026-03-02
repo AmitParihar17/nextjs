@@ -21,7 +21,7 @@ const page = () => {
   const [isSwitchLoading, setisSwitchLoading] = useState(false);
 
   const handleDeleteMessage = (messageId: string) => {
-    setMessages(messages.filter((message) => message._id !== messageId));
+    setMessages(messages.filter((message) => message._id.toString() !== messageId));
   };
   const { data: session } = useSession();
 
@@ -51,7 +51,7 @@ const page = () => {
     setisSwitchLoading(false);
     try {
       const response = await axios.get<ApiResponse>("/api/get-messages");
-      setMessages(response.data.message || []);
+      setMessages(response.data.messages || []);
       if (refresh) {
         toast.info("Showing latest messages");
       }
@@ -155,7 +155,7 @@ const page = () => {
           {messages.length > 0 ? (
             messages.map((message, index) => (
               <MessageCard
-                key={message._id}
+                key={message._id.toString()}
                 message={message}
                 onMessageDelete={handleDeleteMessage}
               />
